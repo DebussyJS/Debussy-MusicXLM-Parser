@@ -2,17 +2,24 @@ class Measure {
     constructor(content) {
         this.notes = []
         if (content.attributes) {
-            console.log(content.attributes[0].time)
-            var attributes = {
-                divisions: content.attributes[0].divisions[0],
-                key: {
+            var attributes = {}
+
+            if (content.attributes[0].divisions) {
+                attributes.divisions = content.attributes[0].divisions[0]
+            }
+            if (content.attributes[0].key) {
+                attributes.key = {
                     fifths: content.attributes[0].key[0].fifths[0]
-                },
-                time: {
+                }
+            }
+            if (content.attributes[0].time) {
+                attributes.time = {
                     beats: content.attributes[0].time[0].beats[0],
                     'beat-type': content.attributes[0].time[0]["beat-type"][0]
-                },
-                clef: {
+                }
+            }
+            if (content.attributes[0].clef) {
+                attributes.clef = {
                     sign: content.attributes[0].clef[0].sign[0],
                     line: content.attributes[0].clef[0].line[0]
                 }
@@ -22,7 +29,16 @@ class Measure {
         }
 
         if (content.barline) {
-            this.attributes = content.barline
+            var barline = {}
+
+            if (content.barline[0].ATTR.location) {
+                barline.location = content.barline[0].ATTR.location
+            }
+            if (content.barline[0]["bar-style"]) {
+                barline.style = content.barline[0]["bar-style"][0]
+            }
+
+            this.barline = barline
         }
 
         content.note.forEach(note => {

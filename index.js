@@ -63,7 +63,7 @@ class XMLParser {
             element.measure.forEach((element) => {
                 measures.push(new Measure(element))
             })
-            console.log(element)
+            console.log(measures)
             this.Dfile.parts[element.ATTR.id] = element.measure
         })
     }
