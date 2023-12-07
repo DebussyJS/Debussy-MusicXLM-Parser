@@ -2,6 +2,7 @@ const xml2js = require('xml2js');
 const fs = require('fs');
 const Instrument = require('./instruments');
 const partInfo = require('./partInfo');
+const Measure = require('./measure');
 
 class XMLParser {
     constructor() {
@@ -16,7 +17,7 @@ class XMLParser {
 
     async buildxml() {
         this.xml = await this.builder.buildObject(this.json);
-        this.xml = '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">'+this.xml.split('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>')[1]
+        this.xml = '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">' + this.xml.split('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>')[1]
         return this.xml
     }
 
@@ -24,10 +25,22 @@ class XMLParser {
         this.Dfile.instruments.forEach((instrument, index) => {
             this.json["score-partwise"]["part-list"][0]["score-part"][index] = instrument.toJSON()
         });
+
         this.json["score-partwise"] = {
             ...this.json["score-partwise"],
             ...this.Dfile.infos.toJSON()
         };
+
+        var part = []
+        const parts = this.Dfile.parts
+        Object.keys(this.Dfile.parts).forEach(function (k) {
+            part.push({
+                ATTR: { id: k },
+                measure: parts[k]
+            })
+        });
+        this.json["score-partwise"]["part"]
+
         return this.json
     }
 
@@ -44,6 +57,15 @@ class XMLParser {
             this.Dfile.instruments.push(new Instrument(element))
         })
         this.Dfile.infos = new partInfo(this.json["score-partwise"])
+        this.Dfile.parts = {}
+        this.json["score-partwise"]["part"].forEach(element => {
+            var measures = []
+            element.measure.forEach((element) => {
+                measures.push(new Measure(element))
+            })
+            console.log(measures)
+            this.Dfile.parts[element.ATTR.id] = element.measure
+        })
     }
 
     get(type) {

@@ -47,7 +47,6 @@ class partInfo {
             try {
                 this.encoding = content["identification"][0]["encoding"]
             } catch (ex) { }
-            console.log(this.encoding)
             try {
                 this.source = content["source"][0]
             } catch (ex) { }
@@ -91,7 +90,6 @@ class partInfo {
         var creator = []
         var creatorList = this.creator
         Object.keys(creatorList).forEach(function (k) {
-            console.log(k)
             creator.push({ _: creatorList[k], ATTR: { type: k } })
         });
         json["identification"][0] = {
