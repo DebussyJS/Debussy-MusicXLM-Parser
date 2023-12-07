@@ -1,8 +1,56 @@
 class Measure {
     constructor(content) {
-        this.notes = content.note
-        this.attributes = content.attributes
-        console.log(this.notes)
+        this.notes = []
+        if (content.attributes) {
+            console.log(content.attributes[0].time)
+            var attributes = {
+                divisions: content.attributes[0].divisions[0],
+                key: {
+                    fifths: content.attributes[0].key[0].fifths[0]
+                },
+                time: {
+                    beats: content.attributes[0].time[0].beats[0],
+                    'beat-type': content.attributes[0].time[0]["beat-type"][0]
+                },
+                clef: {
+                    sign: content.attributes[0].clef[0].sign[0],
+                    line: content.attributes[0].clef[0].line[0]
+                }
+            }
+
+            this.attributes = attributes
+        }
+
+        if (content.barline) {
+            this.attributes = content.barline
+        }
+
+        content.note.forEach(note => {
+            note = {
+                pitch: {
+                    step: note.pitch[0].step[0],
+                    octave: note.pitch[0].octave[0]
+                },
+                duration: note.duration,
+                type: note.type,
+                voice: note.voice,
+                stem: note.stem
+            }
+
+            var notemod = {}
+
+            Object.keys(note).forEach(function (k) {
+                if (k != "pitch") {
+                    if (note[k]) {
+                        notemod[k] = note[k][0]
+                    }
+                } else {
+                    notemod[k] = note[k]
+                }
+            });
+
+            this.notes.push(notemod)
+        })
     }
 
     toJSON() {
