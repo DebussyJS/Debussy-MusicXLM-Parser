@@ -34,13 +34,13 @@ class XMLParser {
         var part = []
         const parts = this.Dfile.parts
         Object.keys(this.Dfile.parts).forEach(function (k) {
+            console.log(parts[k])
             part.push({
                 ATTR: { id: k },
                 measure: parts[k]
             })
         });
-        this.json["score-partwise"]["part"]
-
+        
         return this.json
     }
 
@@ -63,7 +63,6 @@ class XMLParser {
             element.measure.forEach((element) => {
                 measures.push(new Measure(element))
             })
-            console.log(measures)
             this.Dfile.parts[element.ATTR.id] = element.measure
         })
     }
